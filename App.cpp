@@ -1,5 +1,6 @@
 #include <iostream>
 #include <windows.h>
+#include <conio.h>
 #define h 15
 #define w 40
 using namespace std;
@@ -18,32 +19,81 @@ pong ball;
 player bat;
 
 int game_over = 0;
+int score = 0;
+char play = 'y';
 
 void init_buffer();
 void bind_objects();
 void render();
 void update_ball();
 void detect_collision();
+void control();
+void home_screen();
+void game_over_message();
+void reset_game();
 
 int main() {
-	while (!game_over) {
-		init_buffer();
-		bind_objects();
-		detect_collision();
-		render();
-		update_ball();
-		Sleep(50);
+	home_screen();
+	while (play == 'y') {
+		reset_game();
+		while (!game_over) {
+			init_buffer();
+			bind_objects();
+			detect_collision();
+			render();
+			control();
+			update_ball();
+			Sleep(50);
+		}
+		game_over_message();
 	}
 	cout << "Game Over!";
 	return 0;
+}
+
+void game_over_message() {
+	cout << "Game Over!\n";
+	Sleep(2000);
+	fflush(stdin);
+	cout << "Play again(y)? ";
+	cin >> play;
+}
+
+void home_screen() {
+	cout << "How to play\n";
+	cout << "w: move up  s: move down\n";
+	play = _getch();
+	play = 'y';
+}
+void reset_game() {
+	score = 0;
+	game_over = 0;
+	ball.x = w / 2; ball.y = h / 2;
+	bat.pos = h / 2 - bat.len / 2;
+}
+
+void control() {
+	if (_kbhit()) {
+		char c = _getch();
+		switch (c) {
+		case 'w': if (bat.pos > 1) bat.pos--;  break;
+		case 's': if (bat.pos + bat.len < h - 2) bat.pos++;  break;
+		}
+	}
 }
 
 void detect_collision() {
 	if (ball.y <= 1 || ball.y >= h - 2) ball.vy = -ball.vy;
 	if (ball.x <= 1 || ball.x >= w - 2) game_over = 1;
 	for (int i = bat.pos; i <= bat.pos + bat.len; i++) {
-		if (ball.x == 2 && ball.y == i) ball.vx = -ball.vx;
-		if (ball.x == w-3 && ball.y == i) ball.vx = -ball.vx;
+		if (ball.x == 2 && ball.y == i) {
+			ball.vx = -ball.vx;
+			score++;
+		}
+		if (ball.x == w - 3 && ball.y == i) {
+			ball.vx = -ball.vx;
+			score++;
+		}
 	}
 }
 
@@ -77,4 +127,5 @@ void render() {
 		}
 		cout << endl;
 	}
+	cout << "Score: " << score<<endl;
 }
