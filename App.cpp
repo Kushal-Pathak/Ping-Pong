@@ -39,8 +39,8 @@ int main() {
 		while (!game_over) {
 			init_buffer();
 			bind_objects();
-			detect_collision();
 			render();
+			detect_collision();
 			control();
 			update_ball();
 			Sleep(50);
@@ -84,15 +84,20 @@ void control() {
 
 void detect_collision() {
 	if (ball.y <= 1 || ball.y >= h - 2) ball.vy = -ball.vy;
-	if (ball.x <= 1 || ball.x >= w - 2) game_over = 1;
+	if (ball.x <= 1 || ball.x >= w - 2) {
+		game_over = 1;
+		Beep(300, 1000);
+	}
 	for (int i = bat.pos; i <= bat.pos + bat.len; i++) {
 		if (ball.x == 2 && ball.y == i) {
 			ball.vx = -ball.vx;
 			score++;
+			Beep(500, 50);
 		}
 		if (ball.x == w - 3 && ball.y == i) {
 			ball.vx = -ball.vx;
 			score++;
+			Beep(500, 50);
 		}
 	}
 }
