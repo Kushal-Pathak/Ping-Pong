@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <conio.h>
 #define h 15
-#define w 40
+#define w 30
 using namespace std;
 
 char buffer[h][w];
@@ -47,15 +47,14 @@ int main() {
 		}
 		game_over_message();
 	}
-	cout << "Game Over!";
 	return 0;
 }
 
 void game_over_message() {
-	cout << "Game Over!\n";
+	cout << "                         Game Over!\n";
 	Sleep(2000);
 	fflush(stdin);
-	cout << "Play again(y)? ";
+	cout << "                        Play again(y)? ";
 	cin >> play;
 }
 
@@ -83,7 +82,10 @@ void control() {
 }
 
 void detect_collision() {
-	if (ball.y <= 1 || ball.y >= h - 2) ball.vy = -ball.vy;
+	if (ball.y <= 1 || ball.y >= h - 2) {
+		ball.vy = -ball.vy;
+		Beep(400, 50);
+	}
 	if (ball.x <= 1 || ball.x >= w - 2) {
 		game_over = 1;
 		Beep(300, 1000);
@@ -132,5 +134,5 @@ void render() {
 		}
 		cout << endl;
 	}
-	cout << "Score: " << score<<endl;
+	cout << "                          Score: " << score<<endl;
 }
